@@ -1,0 +1,388 @@
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --background-color: #eef1f5;
+    --card-bg: #ffffff;
+    --border-color: #dee2e6;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --winner-bg: #fff3cd;
+    --font-family: 'Roboto', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--dark-color);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 15px;
+}
+
+header h1 {
+    font-weight: 700;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+/* Make player management and scoreboard narrower on larger screens */
+@media (min-width: 992px) {
+    .dashboard {
+        grid-template-columns: 300px 1fr; /* Sidebar for players/score, main area for bracket */
+        grid-template-areas:
+            "sidebar bracket"
+            "scoreboard bracket";
+    }
+    #player-management { grid-area: sidebar; }
+    #tournament-bracket { grid-area: bracket; }
+    #scoreboard { grid-area: scoreboard; }
+}
+
+
+.card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px; /* Add margin for spacing when stacked */
+}
+
+.card h2, .card h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* Player Management */
+#player-management h2 {
+    margin-bottom: 20px;
+}
+
+.player-input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#player-name-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+#player-list {
+    list-style: none;
+    padding: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+#player-list li {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#player-list li:last-child {
+    border-bottom: none;
+}
+
+#player-list li span {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.remove-player-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+.remove-player-btn:hover {
+    background-color: #c82333;
+}
+
+.tournament-controls {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Buttons */
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    font-size: 1em;
+}
+
+button:disabled {
+    background-color: var(--secondary-color);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+#add-player-btn, #start-tournament-btn, #save-score-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#add-player-btn:hover, #start-tournament-btn:hover:not(:disabled), #save-score-btn:hover {
+    background-color: #0056b3;
+}
+
+#reset-tournament-btn {
+    background-color: var(--danger-color);
+    color: white;
+}
+#reset-tournament-btn:hover {
+    background-color: #c82333;
+}
+
+/* Tournament Bracket */
+.bracket {
+    display: flex;
+    overflow-x: auto; /* Allows horizontal scrolling if needed */
+    padding: 20px 0;
+    gap: 40px; /* Space between rounds */
+    align-items: center; /* Vertically center rounds relative to each other */
+    min-height: 400px; /* Ensure enough height for connections */
+}
+
+.round {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Distribute matches vertically */
+    flex-shrink: 0; /* Prevent rounds from shrinking */
+    min-width: 200px; /* Ensure round has some width */
+    gap: 30px; /* Space between matches in a round */
+}
+
+.round h3 {
+    text-align: center;
+    color: var(--secondary-color);
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    border: none;
+    padding: 0;
+}
+
+.match {
+    background-color: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    min-height: 80px; /* Ensure minimum height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.match:hover:not(.match-complete) {
+    background-color: #e9ecef;
+    border-color: var(--primary-color);
+}
+
+.match.selected-match {
+    border-color: var(--success-color);
+    box-shadow: 0 0 5px var(--success-color);
+}
+
+.match.match-complete {
+    cursor: default;
+    background-color: #f8f9fa; /* Slightly different background when complete */
+}
+
+
+.player {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 0.95em;
+}
+
+.player.winner {
+    font-weight: 700;
+    color: var(--success-color);
+}
+
+.player .score {
+    font-weight: 700;
+    margin-left: 10px;
+    min-width: 20px; /* Ensure space for score */
+    text-align: right;
+}
+
+.player .name {
+    flex-grow: 1;
+}
+
+.player.placeholder {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+/* Winner Display */
+#winner-display h3 {
+    margin-bottom: 10px;
+}
+.winner-box {
+    background: linear-gradient(45deg, gold, lightyellow, gold);
+    color: var(--dark-color);
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 700;
+    border: 2px solid goldenrod;
+}
+
+/* Scoreboard */
+#scoreboard-match-info {
+    text-align: center;
+    margin-bottom: 20px;
+    font-style: italic;
+    color: var(--secondary-color);
+}
+
+#scoreboard-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.player-score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: var(--light-color);
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+.player-score span:first-child { /* Player name */
+    font-weight: 500;
+    margin-right: 10px;
+    flex-basis: 50%; /* Give name more space */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.score-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.score-display {
+    font-size: 1.4em;
+    font-weight: 700;
+    min-width: 30px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.score-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1.2em;
+    line-height: 1; /* Center symbol */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.score-btn.plus { background-color: var(--success-color); }
+.score-btn.minus { background-color: var(--danger-color); }
+
+.score-btn:hover { opacity: 0.85; }
+
+.vs {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 5px 0;
+}
+
+#save-score-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.9em;
+    margin-top: 5px;
+    text-align: center;
+    min-height: 1.2em; /* Reserve space */
+}
+
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--secondary-color);
+    font-size: 0.9em;
+}
