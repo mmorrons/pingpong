@@ -1,103 +1,219 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Torneo Fisiologia 2025 - Dashboard</title>
+    <title>Dashboard Torneo Fisiologia 2025</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🏓 Torneo Fisiologia 2025 🏆</h1>
-        </header>
+    <header>
+        <h1>Torneo Fisiologia 2025 - Dashboard</h1>
+    </header>
 
-        <main class="dashboard">
-
-            <!-- Player Management Section -->
-            <section id="player-management" class="card">
-                <h2>Gestione Giocatori (Max 16)</h2>
-                <div class="player-input-area">
-                    <input type="text" id="player-name-input" placeholder="Nome Giocatore">
-                    <button id="add-player-btn">Aggiungi Giocatore</button>
+    <main class="container">
+        <section id="players-section" class="card">
+            <h2>Giocatori</h2>
+            <form id="addPlayerForm">
+                <input type="text" id="playerName" placeholder="Nome Giocatore" required>
+                <button type="submit">Aggiungi Giocatore</button>
+            </form>
+            <div id="playerCardsContainer">
                 </div>
-                <ul id="player-list">
-                    <!-- Player list items will be added here -->
-                </ul>
-                <div class="tournament-controls">
-                     <button id="start-tournament-btn" disabled>Inizia Torneo (16 Giocatori Richiesti)</button>
-                     <button id="reset-tournament-btn" class="danger">Resetta Tutto</button>
-                </div>
-            </section>
+             <button id="populateBracketButton" class="action-button">Popola Tabellone Iniziale</button>
+        </section>
 
-            <!-- Tournament Bracket Section -->
-            <section id="tournament-bracket" class="card hidden">
-                 <h2>Tabellone Torneo</h2>
-                 <div class="bracket">
-                     <!-- Round of 16 -->
-                     <div class="round" id="round-of-16">
-                         <h3>Ottavi di Finale</h3>
-                         <!-- Matches will be generated here -->
-                     </div>
-                     <!-- Quarter Finals -->
-                     <div class="round" id="quarter-finals">
-                         <h3>Quarti di Finale</h3>
-                          <!-- Matches will be generated here -->
-                     </div>
-                     <!-- Semi Finals -->
-                     <div class="round" id="semi-finals">
-                         <h3>Semifinali</h3>
-                          <!-- Matches will be generated here -->
-                     </div>
-                     <!-- Final -->
-                     <div class="round" id="final">
-                         <h3>Finale</h3>
-                          <!-- Match will be generated here -->
-                     </div>
-                     <!-- Winner -->
-                     <div class="round" id="winner-display">
-                         <h3>🏆 Vincitore 🏆</h3>
-                         <div class="winner-box" id="tournament-winner">--</div>
-                     </div>
-                 </div>
-            </section>
-
-            <!-- Scoreboard Section -->
-            <section id="scoreboard" class="card hidden">
-                <h2>Segnapunti Partita Corrente</h2>
-                <div id="scoreboard-match-info">
-                    <p>Seleziona una partita dal tabellone per inserire i punteggi.</p>
-                </div>
-                <div id="scoreboard-controls" class="hidden">
-                    <div class="player-score">
-                        <span id="sb-player1-name">Giocatore 1</span>
-                        <div class="score-controls">
-                            <button class="score-btn minus" data-player="1">-</button>
-                            <span class="score-display" id="sb-player1-score">0</span>
-                            <button class="score-btn plus" data-player="1">+</button>
+        <section id="bracket-section" class="card">
+            <h2>Tabellone Torneo</h2>
+            <div class="tournament-bracket">
+                <div class="round round-1">
+                    <h3>Ottavi di Finale</h3>
+                    <div class="match" id="match-r1m1">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m1p1">Giocatore 1</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
                         </div>
-                    </div>
-                     <div class="vs">VS</div>
-                    <div class="player-score">
-                        <span id="sb-player2-name">Giocatore 2</span>
-                         <div class="score-controls">
-                            <button class="score-btn minus" data-player="2">-</button>
-                            <span class="score-display" id="sb-player2-score">0</span>
-                            <button class="score-btn plus" data-player="2">+</button>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m1p2">Giocatore 2</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
                         </div>
+                         <button class="save-match" data-match-id="r1m1" data-next-match="match-qf1" data-next-slot="player1">Salva Match</button>
                     </div>
-                    <button id="save-score-btn">Salva Punteggio Finale</button>
-                     <span id="score-error" class="error-message"></span>
+                     <div class="match" id="match-r1m2">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m2p1">Giocatore 3</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m2p2">Giocatore 4</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="r1m2" data-next-match="match-qf1" data-next-slot="player2">Salva Match</button>
+                    </div>
+                     <div class="match" id="match-r1m3">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m3p1">Giocatore 5</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m3p2">Giocatore 6</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="r1m3" data-next-match="match-qf2" data-next-slot="player1">Salva Match</button>
+                    </div>
+                     <div class="match" id="match-r1m4">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m4p1">Giocatore 7</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m4p2">Giocatore 8</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="r1m4" data-next-match="match-qf2" data-next-slot="player2">Salva Match</button>
+                    </div>
+                    <div class="match" id="match-r1m5">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m5p1">Giocatore 9</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m5p2">Giocatore 10</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="r1m5" data-next-match="match-qf3" data-next-slot="player1">Salva Match</button>
+                    </div>
+                     <div class="match" id="match-r1m6">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m6p1">Giocatore 11</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m6p2">Giocatore 12</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="r1m6" data-next-match="match-qf3" data-next-slot="player2">Salva Match</button>
+                    </div>
+                     <div class="match" id="match-r1m7">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m7p1">Giocatore 13</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m7p2">Giocatore 14</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="r1m7" data-next-match="match-qf4" data-next-slot="player1">Salva Match</button>
+                    </div>
+                     <div class="match" id="match-r1m8">
+                        <div class="match-content">
+                            <div class="player-slot player1" contenteditable="false" data-player-id="r1m8p1">Giocatore 15</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" contenteditable="false" data-player-id="r1m8p2">Giocatore 16</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="r1m8" data-next-match="match-qf4" data-next-slot="player2">Salva Match</button>
+                    </div>
                 </div>
-            </section>
 
-        </main>
+                <div class="round round-2">
+                    <h3>Quarti di Finale</h3>
+                     <div class="match" id="match-qf1">
+                        <div class="match-content">
+                            <div class="player-slot player1" data-player-id="qf1p1">Vinc. R1M1/R1M2</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" data-player-id="qf1p2">Vinc. R1M1/R1M2</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="match-qf1" data-next-match="match-sf1" data-next-slot="player1">Salva Match</button>
+                    </div>
+                     <div class="match" id="match-qf2">
+                        <div class="match-content">
+                            <div class="player-slot player1" data-player-id="qf2p1">Vinc. R1M3/R1M4</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" data-player-id="qf2p2">Vinc. R1M3/R1M4</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="match-qf2" data-next-match="match-sf1" data-next-slot="player2">Salva Match</button>
+                    </div>
+                      <div class="match" id="match-qf3">
+                        <div class="match-content">
+                            <div class="player-slot player1" data-player-id="qf3p1">Vinc. R1M5/R1M6</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" data-player-id="qf3p2">Vinc. R1M5/R1M6</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="match-qf3" data-next-match="match-sf2" data-next-slot="player1">Salva Match</button>
+                    </div>
+                     <div class="match" id="match-qf4">
+                        <div class="match-content">
+                            <div class="player-slot player1" data-player-id="qf4p1">Vinc. R1M7/R1M8</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" data-player-id="qf4p2">Vinc. R1M7/R1M8</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="match-qf4" data-next-match="match-sf2" data-next-slot="player2">Salva Match</button>
+                    </div>
+                </div>
 
-        <footer>
-            <p>Sviluppato con 💙 per il Torneo Fisiologia</p>
-        </footer>
-    </div>
+                <div class="round round-3">
+                    <h3>Semifinali</h3>
+                     <div class="match" id="match-sf1">
+                        <div class="match-content">
+                            <div class="player-slot player1" data-player-id="sf1p1">Vinc. QF1/QF2</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" data-player-id="sf1p2">Vinc. QF1/QF2</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="match-sf1" data-next-match="match-f" data-next-slot="player1">Salva Match</button>
+                    </div>
+                    <div class="match" id="match-sf2">
+                        <div class="match-content">
+                            <div class="player-slot player1" data-player-id="sf2p1">Vinc. QF3/QF4</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" data-player-id="sf2p2">Vinc. QF3/QF4</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="match-sf2" data-next-match="match-f" data-next-slot="player2">Salva Match</button>
+                    </div>
+                </div>
+
+                <div class="round round-4">
+                    <h3>Finale</h3>
+                     <div class="match" id="match-f">
+                        <div class="match-content">
+                            <div class="player-slot player1" data-player-id="fp1">Vinc. SF1</div>
+                            <input type="number" class="score score1" min="0" placeholder="0">
+                        </div>
+                        <div class="match-content">
+                             <div class="player-slot player2" data-player-id="fp2">Vinc. SF2</div>
+                             <input type="number" class="score score2" min="0" placeholder="0">
+                        </div>
+                         <button class="save-match" data-match-id="match-f" data-next-match="winner" data-next-slot="player">Salva Match</button>
+                    </div>
+                    <div id="winner-display" class="winner-card">
+                        <h3>Vincitore del Torneo</h3>
+                        <p id="tournament-winner">-- In attesa --</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+         <button id="resetTournamentButton" class="action-button danger-button">Reset Torneo (ATTENZIONE!)</button>
+    </main>
 
     <script src="script.js"></script>
 </body>
