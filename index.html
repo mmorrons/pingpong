@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneo Fisiologia 2025 - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏓 Torneo Fisiologia 2025 🏆</h1>
+        </header>
+
+        <main class="dashboard">
+
+            <!-- Player Management Section -->
+            <section id="player-management" class="card">
+                <h2>Gestione Giocatori (Max 16)</h2>
+                <div class="player-input-area">
+                    <input type="text" id="player-name-input" placeholder="Nome Giocatore">
+                    <button id="add-player-btn">Aggiungi Giocatore</button>
+                </div>
+                <ul id="player-list">
+                    <!-- Player list items will be added here -->
+                </ul>
+                <div class="tournament-controls">
+                     <button id="start-tournament-btn" disabled>Inizia Torneo (16 Giocatori Richiesti)</button>
+                     <button id="reset-tournament-btn" class="danger">Resetta Tutto</button>
+                </div>
+            </section>
+
+            <!-- Tournament Bracket Section -->
+            <section id="tournament-bracket" class="card hidden">
+                 <h2>Tabellone Torneo</h2>
+                 <div class="bracket">
+                     <!-- Round of 16 -->
+                     <div class="round" id="round-of-16">
+                         <h3>Ottavi di Finale</h3>
+                         <!-- Matches will be generated here -->
+                     </div>
+                     <!-- Quarter Finals -->
+                     <div class="round" id="quarter-finals">
+                         <h3>Quarti di Finale</h3>
+                          <!-- Matches will be generated here -->
+                     </div>
+                     <!-- Semi Finals -->
+                     <div class="round" id="semi-finals">
+                         <h3>Semifinali</h3>
+                          <!-- Matches will be generated here -->
+                     </div>
+                     <!-- Final -->
+                     <div class="round" id="final">
+                         <h3>Finale</h3>
+                          <!-- Match will be generated here -->
+                     </div>
+                     <!-- Winner -->
+                     <div class="round" id="winner-display">
+                         <h3>🏆 Vincitore 🏆</h3>
+                         <div class="winner-box" id="tournament-winner">--</div>
+                     </div>
+                 </div>
+            </section>
+
+            <!-- Scoreboard Section -->
+            <section id="scoreboard" class="card hidden">
+                <h2>Segnapunti Partita Corrente</h2>
+                <div id="scoreboard-match-info">
+                    <p>Seleziona una partita dal tabellone per inserire i punteggi.</p>
+                </div>
+                <div id="scoreboard-controls" class="hidden">
+                    <div class="player-score">
+                        <span id="sb-player1-name">Giocatore 1</span>
+                        <div class="score-controls">
+                            <button class="score-btn minus" data-player="1">-</button>
+                            <span class="score-display" id="sb-player1-score">0</span>
+                            <button class="score-btn plus" data-player="1">+</button>
+                        </div>
+                    </div>
+                     <div class="vs">VS</div>
+                    <div class="player-score">
+                        <span id="sb-player2-name">Giocatore 2</span>
+                         <div class="score-controls">
+                            <button class="score-btn minus" data-player="2">-</button>
+                            <span class="score-display" id="sb-player2-score">0</span>
+                            <button class="score-btn plus" data-player="2">+</button>
+                        </div>
+                    </div>
+                    <button id="save-score-btn">Salva Punteggio Finale</button>
+                     <span id="score-error" class="error-message"></span>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>Sviluppato con 💙 per il Torneo Fisiologia</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
