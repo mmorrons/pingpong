@@ -1,267 +1,357 @@
-:root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --background-color: #f8f9fa;
-    --card-background: #ffffff;
-    --text-color: #333;
-    --border-color: #dee2e6;
-    --winner-color: #28a745;
-    --loser-color: #dc3545;
-    --hover-color: #e9ecef;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const addPlayerForm = document.getElementById('addPlayerForm');
+    const playerNameInput = document.getElementById('playerName');
+    const playerCardsContainer = document.getElementById('playerCardsContainer');
+    const populateBracketButton = document.getElementById('populateBracketButton');
+    const bracketSection = document.getElementById('bracket-section');
+    const tournamentWinnerDisplay = document.getElementById('tournament-winner');
+    const winnerDisplayCard = document.getElementById('winner-display');
+    const resetTournamentButton = document.getElementById('resetTournamentButton');
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+    const MAX_PLAYERS = 16;
+    const STORAGE_KEYS = {
+        PLAYERS: 'torneoFisioPlayers',
+        MATCHES: 'torneoFisioMatches'
+    };
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    padding-bottom: 50px; /* Space for reset button */
-}
+    let players = [];
+    let matches = {}; // Store match data like { 'match-r1m1': { score1: 11, score2: 5, winner: 'Player A', loser: 'Player B', saved: true }, ... }
 
-header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 1rem 0;
-    text-align: center;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+    // --- Player Management ---
 
-.container {
-    max-width: 1600px;
-    margin: auto;
-    padding: 0 1rem;
-}
-
-.card {
-    background-color: var(--card-background);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-}
-
-h2, h3 {
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-    text-align: center;
-}
-
-/* Player Section */
-#players-section form {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-#players-section input[type="text"] {
-    flex-grow: 1;
-    padding: 0.6rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-}
-
-#players-section button,
-.action-button,
-.save-match {
-    padding: 0.6rem 1rem;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    font-size: 0.9rem;
-}
-
-#players-section button:hover,
-.action-button:hover,
-.save-match:hover {
-    background-color: #0056b3;
-}
-
-#playerCardsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.player-card {
-    background-color: var(--hover-color);
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    border: 1px solid var(--border-color);
-}
-
-.danger-button {
-    background-color: var(--loser-color);
-}
-.danger-button:hover {
-     background-color: #c82333;
-}
-
-
-/* Bracket Section */
-.tournament-bracket {
-    display: flex;
-    overflow-x: auto; /* Allows horizontal scrolling on small screens */
-    padding-bottom: 1rem; /* Space for scrollbar */
-    gap: 2rem; /* Spacing between rounds */
-    min-height: 400px; /* Ensure rounds have space */
-}
-
-.round {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around; /* Distribute matches vertically */
-    flex: 1 0 250px; /* Flex properties for responsiveness */
-    gap: 1.5rem; /* Spacing between matches */
-}
-
-.match {
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px; /* Vertical space between matches */
-    position: relative;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    transition: box-shadow 0.2s ease;
-    display: flex;
-    flex-direction: column; /* Stack players and button */
-    gap: 5px; /* Space between player rows and button */
-}
-
-.match:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-
-.match-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee; /* Separator between players */
-}
-.match-content:last-of-type {
-    border-bottom: none;
-}
-
-
-.player-slot {
-    flex-grow: 1;
-    padding: 5px;
-    background-color: #f9f9f9;
-    border-radius: 3px;
-    font-size: 0.95rem;
-    min-height: 30px; /* Ensure slot height */
-    line-height: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    /* Remove contenteditable styling */
-    /* -webkit-user-modify: read-write-plaintext-only; */
-    /* outline: none; */
-    /* border: 1px dashed var(--border-color); */ /* Indicate editable only when needed */
-}
-
-.player-slot.winner {
-    font-weight: bold;
-    color: var(--winner-color);
-}
-
-.player-slot.loser {
-    color: var(--secondary-color);
-    text-decoration: line-through;
-}
-
-
-.score {
-    width: 45px; /* Smaller width for score */
-    padding: 5px;
-    text-align: center;
-    border: 1px solid var(--border-color);
-    border-radius: 3px;
-    margin-left: 10px;
-    -moz-appearance: textfield; /* Hides arrows in Firefox */
-}
-
-/* Hide arrows in Chrome, Safari, Edge */
-.score::-webkit-outer-spin-button,
-.score::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.match button.save-match {
-    margin-top: 8px; /* Space above the button */
-    width: 100%; /* Button takes full width of match container */
-    font-size: 0.85rem;
-}
-
-.match button:disabled {
-    background-color: var(--secondary-color);
-    cursor: not-allowed;
-}
-
-/* Winner Display */
-.winner-card {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    text-align: center;
-    background-color: var(--winner-color);
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.winner-card h3 {
-    color: white;
-    margin-bottom: 0.5rem;
-}
-
-#tournament-winner {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-/* Responsive adjustments (basic) */
-@media (max-width: 992px) {
-    .tournament-bracket {
-        gap: 1.5rem;
+    function renderPlayers() {
+        playerCardsContainer.innerHTML = ''; // Clear existing cards
+        players.forEach(player => {
+            const card = document.createElement('div');
+            card.classList.add('player-card');
+            card.textContent = player.name;
+            card.dataset.playerId = player.id; // Use unique ID if needed later
+            playerCardsContainer.appendChild(card);
+        });
+         // Enable/disable populate button based on player count
+        populateBracketButton.disabled = players.length !== MAX_PLAYERS;
+        if (players.length > MAX_PLAYERS) {
+            alert(`Puoi aggiungere massimo ${MAX_PLAYERS} giocatori.`);
+            // Optionally remove the last added player
+            players.pop();
+            savePlayers();
+            renderPlayers(); // Re-render
+        }
     }
-    .round {
-        flex-basis: 220px; /* Slightly smaller base width */
-    }
-}
 
-@media (max-width: 768px) {
-    h1 {
-        font-size: 1.8rem;
+    function addPlayer(event) {
+        event.preventDefault(); // Prevent page reload
+        const name = playerNameInput.value.trim();
+        if (name && players.length < MAX_PLAYERS) {
+             if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                alert('Questo giocatore è già stato aggiunto.');
+                return;
+            }
+            players.push({ id: Date.now(), name: name }); // Simple unique ID
+            playerNameInput.value = ''; // Clear input
+            savePlayers();
+            renderPlayers();
+        } else if (players.length >= MAX_PLAYERS) {
+             alert(`Limite di ${MAX_PLAYERS} giocatori raggiunto.`);
+        }
     }
-    .tournament-bracket {
-       /* Scrolling will handle layout */
+
+    function savePlayers() {
+        localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(players));
     }
-     .round {
-        flex-basis: 200px; /* Even smaller */
-        gap: 1rem;
+
+    function loadPlayers() {
+        const storedPlayers = localStorage.getItem(STORAGE_KEYS.PLAYERS);
+        if (storedPlayers) {
+            players = JSON.parse(storedPlayers);
+        } else {
+            players = [];
+        }
+        renderPlayers();
     }
-    .match {
-        padding: 8px;
+
+     // --- Bracket Management ---
+
+    function populateInitialBracket() {
+         if (players.length !== MAX_PLAYERS) {
+            alert(`Sono necessari ${MAX_PLAYERS} giocatori per popolare il tabellone.`);
+            return;
+        }
+
+        const round1Slots = bracketSection.querySelectorAll('.round-1 .player-slot');
+        if (round1Slots.length !== MAX_PLAYERS) {
+            console.error("Errore: Numero slot nel Round 1 non corrisponde a MAX_PLAYERS.");
+            return;
+        }
+
+        // Simple sequential population
+        players.forEach((player, index) => {
+            if (round1Slots[index]) {
+                 round1Slots[index].textContent = player.name;
+                 // Save this initial population to matches state?
+                 // Let's save player names assigned to slots directly
+                 matches[round1Slots[index].dataset.playerId] = { name: player.name };
+            }
+        });
+
+        // Disable editing after population
+        // round1Slots.forEach(slot => slot.contentEditable = 'false');
+        saveMatches(); // Save the initial player names in slots
+        alert('Tabellone iniziale popolato con i giocatori aggiunti.');
     }
-    .player-slot, .score, .save-match {
-        font-size: 0.8rem;
+
+
+    function saveMatchData(matchId, score1, score2, winnerName, loserName) {
+        matches[matchId] = {
+            score1: score1,
+            score2: score2,
+            winner: winnerName,
+            loser: loserName,
+            saved: true
+        };
+        saveMatches();
     }
-    .score {
-        width: 35px;
+
+     function advanceWinner(winnerName, nextMatchId, nextSlotClass) {
+        if (nextMatchId && nextMatchId !== 'winner') {
+            const nextMatchElement = document.getElementById(nextMatchId);
+            if (nextMatchElement) {
+                const nextSlot = nextMatchElement.querySelector(`.player-slot.${nextSlotClass}`);
+                if (nextSlot) {
+                    nextSlot.textContent = winnerName;
+                     // Save the advanced player name
+                    matches[nextSlot.dataset.playerId] = { name: winnerName };
+                    saveMatches(); // Save after advancing
+                } else {
+                    console.error(`Slot ${nextSlotClass} non trovato nel match ${nextMatchId}`);
+                }
+            } else {
+                console.error(`Match successivo ${nextMatchId} non trovato.`);
+            }
+        } else if (nextMatchId === 'winner') {
+             // Handle tournament winner
+            tournamentWinnerDisplay.textContent = winnerName;
+            winnerDisplayCard.style.display = 'block'; // Show the winner card
+            // Optionally save the overall winner separately
+            matches['tournamentWinner'] = winnerName;
+            saveMatches();
+        }
     }
-}
+
+    function handleSaveMatchClick(event) {
+        const button = event.target;
+        const matchElement = button.closest('.match');
+        const matchId = button.dataset.matchId;
+        const nextMatchId = button.dataset.nextMatch;
+        const nextSlotClass = button.dataset.nextSlot;
+
+        const player1Slot = matchElement.querySelector('.player-slot.player1');
+        const player2Slot = matchElement.querySelector('.player-slot.player2');
+        const score1Input = matchElement.querySelector('.score.score1');
+        const score2Input = matchElement.querySelector('.score.score2');
+
+        const player1Name = player1Slot.textContent.trim();
+        const player2Name = player2Slot.textContent.trim();
+        const score1 = parseInt(score1Input.value, 10);
+        const score2 = parseInt(score2Input.value, 10);
+
+        // Basic Validation
+        if (isNaN(score1) || isNaN(score2) || score1 < 0 || score2 < 0) {
+            alert('Inserisci punteggi validi (numeri non negativi).');
+            return;
+        }
+        if (score1 === score2) {
+             alert('Il punteggio non può essere un pareggio.');
+            return;
+        }
+         if (!player1Name || !player2Name || player1Name.startsWith('Giocatore') || player1Name.startsWith('Vinc.') || player2Name.startsWith('Giocatore') || player2Name.startsWith('Vinc.')) {
+             alert('Assicurati che entrambi gli slot giocatore siano popolati correttamente prima di salvare.');
+             return;
+         }
+
+
+        let winnerName, loserName;
+        if (score1 > score2) {
+            winnerName = player1Name;
+            loserName = player2Name;
+            player1Slot.classList.add('winner');
+            player1Slot.classList.remove('loser');
+            player2Slot.classList.add('loser');
+            player2Slot.classList.remove('winner');
+        } else {
+            winnerName = player2Name;
+            loserName = player1Name;
+            player2Slot.classList.add('winner');
+            player2Slot.classList.remove('loser');
+            player1Slot.classList.add('loser');
+            player1Slot.classList.remove('winner');
+        }
+
+        // Save data
+        saveMatchData(matchId, score1, score2, winnerName, loserName);
+
+        // Advance winner
+        advanceWinner(winnerName, nextMatchId, nextSlotClass);
+
+        // Update UI - disable inputs and button
+        score1Input.disabled = true;
+        score2Input.disabled = true;
+        button.disabled = true;
+        button.textContent = 'Salvato';
+
+        // Persist disabled state visually might require storing it or re-applying on load
+    }
+
+     function saveMatches() {
+        localStorage.setItem(STORAGE_KEYS.MATCHES, JSON.stringify(matches));
+    }
+
+    function loadMatches() {
+        const storedMatches = localStorage.getItem(STORAGE_KEYS.MATCHES);
+        if (storedMatches) {
+            matches = JSON.parse(storedMatches);
+        } else {
+            matches = {};
+        }
+
+        // Restore bracket state from saved data
+        document.querySelectorAll('.match').forEach(matchElement => {
+            const matchId = matchElement.id;
+            const matchData = matches[matchId];
+
+            const player1Slot = matchElement.querySelector('.player-slot.player1');
+            const player2Slot = matchElement.querySelector('.player-slot.player2');
+            const score1Input = matchElement.querySelector('.score.score1');
+            const score2Input = matchElement.querySelector('.score.score2');
+            const saveButton = matchElement.querySelector('.save-match');
+
+            // Restore player names in slots that aren't the initial round
+             if (player1Slot && matches[player1Slot.dataset.playerId]?.name) {
+                 player1Slot.textContent = matches[player1Slot.dataset.playerId].name;
+             }
+             if (player2Slot && matches[player2Slot.dataset.playerId]?.name) {
+                 player2Slot.textContent = matches[player2Slot.dataset.playerId].name;
+             }
+
+
+            if (matchData?.saved) {
+                 // Restore scores
+                score1Input.value = matchData.score1 ?? '';
+                score2Input.value = matchData.score2 ?? '';
+
+                 // Restore winner/loser styling
+                if (matchData.winner === player1Slot.textContent.trim()) {
+                     player1Slot.classList.add('winner');
+                     player2Slot.classList.add('loser');
+                } else if (matchData.winner === player2Slot.textContent.trim()) {
+                    player2Slot.classList.add('winner');
+                    player1Slot.classList.add('loser');
+                }
+
+                // Restore disabled state
+                score1Input.disabled = true;
+                score2Input.disabled = true;
+                saveButton.disabled = true;
+                saveButton.textContent = 'Salvato';
+
+                // We don't need to re-advance winner here, as names in next rounds
+                // should be loaded by the slot-specific check above.
+            } else {
+                 // Ensure fields are enabled if not saved
+                 score1Input.disabled = false;
+                 score2Input.disabled = false;
+                 saveButton.disabled = false;
+                 saveButton.textContent = 'Salva Match';
+                 player1Slot?.classList.remove('winner', 'loser');
+                 player2Slot?.classList.remove('winner', 'loser');
+            }
+        });
+
+         // Restore overall winner if present
+        if (matches['tournamentWinner']) {
+            tournamentWinnerDisplay.textContent = matches['tournamentWinner'];
+            winnerDisplayCard.style.display = 'block';
+        } else {
+            winnerDisplayCard.style.display = 'none'; // Hide if no winner yet
+        }
+    }
+
+    function resetTournament() {
+        if (confirm("Sei sicuro di voler resettare TUTTO il torneo? Giocatori e punteggi verranno cancellati.")) {
+            // Clear local storage
+            localStorage.removeItem(STORAGE_KEYS.PLAYERS);
+            localStorage.removeItem(STORAGE_KEYS.MATCHES);
+
+            // Clear current state variables
+            players = [];
+            matches = {};
+
+            // Clear UI elements
+            playerNameInput.value = '';
+            playerCardsContainer.innerHTML = '';
+            winnerDisplayCard.style.display = 'none';
+            tournamentWinnerDisplay.textContent = '-- In attesa --';
+
+            // Reset bracket visuals (clear inputs, names, styles, enable buttons)
+             document.querySelectorAll('.match').forEach(matchElement => {
+                 const score1Input = matchElement.querySelector('.score.score1');
+                 const score2Input = matchElement.querySelector('.score.score2');
+                 const saveButton = matchElement.querySelector('.save-match');
+                 const playerSlots = matchElement.querySelectorAll('.player-slot');
+
+                 score1Input.value = '';
+                 score1Input.disabled = false;
+                 score1Input.placeholder = '0';
+                 score2Input.value = '';
+                 score2Input.disabled = false;
+                 score2Input.placeholder = '0';
+
+                 saveButton.disabled = false;
+                 saveButton.textContent = 'Salva Match';
+
+                 playerSlots.forEach((slot, index) => {
+                    slot.classList.remove('winner', 'loser');
+                    // Reset player names based on round
+                    const round = slot.closest('.round');
+                    if (round.classList.contains('round-1')) {
+                         // Reset initial round placeholders (assuming 16 slots)
+                         slot.textContent = `Giocatore ${slot.dataset.playerId.match(/r1m(\d)p(\d)/)[1] * 2 - (slot.dataset.playerId.endsWith('p2') ? 0 : 1)}`;
+                    } else {
+                        // Reset placeholders for later rounds
+                        const placeholderMap = {
+                            'qf1p1': 'Vinc. R1M1/R1M2', 'qf1p2': 'Vinc. R1M1/R1M2',
+                            'qf2p1': 'Vinc. R1M3/R1M4', 'qf2p2': 'Vinc. R1M3/R1M4',
+                            'qf3p1': 'Vinc. R1M5/R1M6', 'qf3p2': 'Vinc. R1M5/R1M6',
+                            'qf4p1': 'Vinc. R1M7/R1M8', 'qf4p2': 'Vinc. R1M7/R1M8',
+                            'sf1p1': 'Vinc. QF1/QF2', 'sf1p2': 'Vinc. QF1/QF2',
+                            'sf2p1': 'Vinc. QF3/QF4', 'sf2p2': 'Vinc. QF3/QF4',
+                            'fp1': 'Vinc. SF1', 'fp2': 'Vinc. SF2'
+                        };
+                         slot.textContent = placeholderMap[slot.dataset.playerId] || 'TBD';
+                    }
+                 });
+            });
+
+             // Re-render empty player list and update button states
+             renderPlayers();
+             alert('Torneo resettato.');
+        }
+    }
+
+
+    // --- Initialization ---
+    addPlayerForm.addEventListener('submit', addPlayer);
+    populateBracketButton.addEventListener('click', populateInitialBracket);
+    resetTournamentButton.addEventListener('click', resetTournament);
+
+    // Use event delegation for save buttons for efficiency
+    bracketSection.addEventListener('click', (event) => {
+        if (event.target.classList.contains('save-match')) {
+            handleSaveMatchClick(event);
+        }
+    });
+
+    // Load existing data on page load
+    loadPlayers();
+    loadMatches(); // Load matches AFTER setting up the initial HTML structure
+});
