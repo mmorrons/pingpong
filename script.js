@@ -82,10 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getPlayerInfo(playerId) {
-        // *** No change needed here, still return default image info for consistency ***
-        // *** The decision to *use* the image happens later ***
         if (playerId === null || playerId === undefined) return { name: 'TBD', color: null, image: DEFAULT_IMAGE };
-        if (playerId === 'BYE') return { name: 'BYE', color: null, image: DEFAULT_IMAGE }; // Still provide image info
+        if (playerId === 'BYE') return { name: 'BYE', color: null, image: DEFAULT_IMAGE };
         const player = players.find(p => p.id === playerId);
         return player
             ? { name: player.name, color: player.color || null, image: player.image || DEFAULT_IMAGE }
@@ -303,28 +301,31 @@ document.addEventListener('DOMContentLoaded', () => {
          const slotDiv = document.createElement('div');
          slotDiv.classList.add('player-slot');
 
-         // --- NEW LOGIC for BYE ---
+         const nameSpan = document.createElement('span');
+         nameSpan.classList.add('player-name');
+         nameSpan.textContent = playerInfo.name; // Set name first
+
+         // --- Logic for BYE (no image/score) ---
          if (playerId === 'BYE') {
              slotDiv.classList.add('bye');
-             const nameSpan = document.createElement('span');
-             nameSpan.classList.add('player-name');
-             nameSpan.textContent = playerInfo.name; // Should be "BYE"
-             slotDiv.appendChild(nameSpan);
-             // DO NOT add image or score for BYE
+             slotDiv.appendChild(nameSpan); // Only add name span
          }
-         // --- END NEW LOGIC for BYE ---
-         else { // --- Existing logic for non-BYE players ---
+         // --- NEW Logic for TBD (no image/score) ---
+         else if (playerId === null) {
+             slotDiv.classList.add('tbd');
+             nameSpan.textContent = 'TBD'; // Explicitly set TBD text
+             slotDiv.appendChild(nameSpan); // Only add name span
+         }
+         // --- Existing logic for Actual Players (with image/score) ---
+         else {
              const image = document.createElement('img');
              image.src = playerInfo.image; // Uses default from getPlayerInfo if needed
              image.alt = playerInfo.name;
              image.classList.add('player-slot-image');
              image.onerror = function() { this.src = DEFAULT_IMAGE; }; // Fallback to default
-             slotDiv.appendChild(image);
+             slotDiv.appendChild(image); // Add image first for non-BYE/TBD
 
-             const nameSpan = document.createElement('span');
-             nameSpan.classList.add('player-name');
-             nameSpan.textContent = playerInfo.name;
-             slotDiv.appendChild(nameSpan);
+             slotDiv.appendChild(nameSpan); // Add name span after image
 
              const scoreSpan = document.createElement('span');
              scoreSpan.classList.add('score');
@@ -340,20 +341,17 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
              }
              scoreSpan.textContent = scoreText;
-             slotDiv.appendChild(scoreSpan);
+             slotDiv.appendChild(scoreSpan); // Add score span last
 
-             // Apply winner/loser/tbd styling (only for non-BYE)
+             // Apply winner/loser styling (only for actual players)
              if (match.status === 'completed') {
                  if (match.winnerId === playerId) {
                      slotDiv.classList.add('winner');
-                 } else if (match.winnerId !== null && match.winnerId !== 'BYE') {
+                 } else { // Implicitly winnerId is not null and not BYE if we are here
                      slotDiv.classList.add('loser');
                  }
-             } else if (playerId === null) {
-                 slotDiv.classList.add('tbd');
-                 nameSpan.textContent = 'TBD'; // Ensure TBD text if player ID is null
              }
-         } // --- End existing logic ---
+         } // --- End logic for Actual Players ---
 
          return slotDiv;
      }
@@ -397,9 +395,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
          if (finalMatch && finalMatch.status === 'completed' && finalMatch.winnerId && finalMatch.winnerId !== 'BYE') {
              const winnerInfo = getPlayerInfo(finalMatch.winnerId);
-             winnerImage.src = winnerInfo.image; // Uses default via getPlayerInfo
+             winnerImage.src = winnerInfo.image;
              winnerImage.alt = winnerInfo.name;
-             winnerImage.onerror = function() { this.src = DEFAULT_IMAGE; }; // Set fallback
+             winnerImage.onerror = function() { this.src = DEFAULT_IMAGE; };
              winnerNameDisplay.textContent = winnerInfo.name;
              winnerSection.style.display = 'block';
 
