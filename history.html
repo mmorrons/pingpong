@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storico Partite - Torneo Fisiologia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+         <h1>Torneo Fisiologia 2025</h1>
+         <nav>
+            <a href="index.html" class="nav-link">Tabellone</a>
+            <a href="players.html" class="nav-link">Giocatori</a>
+            <a href="history.html" class="nav-link active">Storico</a>
+         </nav>
+    </header>
+
+    <main class="container">
+        <section id="history-section" class="card">
+            <h2>Storico Partite Completate</h2>
+
+            <div class="history-table-container">
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Giocatore 1</th>
+                            <th>Giocatore 2</th>
+                            <th>Punteggio Finale</th>
+                            <th>Vincitore</th>
+                            <th>Formato</th>
+                            <th>Target</th>
+                            <th>Durata</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        </tbody>
+                </table>
+            </div>
+            <p id="no-history-message" style="display: none;">Nessuna partita completata trovata nello storico.</p>
+
+        </section>
+    </main>
+
+    <button id="theme-toggle" class="theme-toggle-button" title="Toggle Light/Dark Theme">☀️</button>
+
+    <script src="history.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>

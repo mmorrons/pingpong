@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partita Live - Torneo Fisiologia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+         <h1>Torneo Fisiologia 2025</h1>
+         <nav>
+            <a href="index.html" class="nav-link">Tabellone</a>
+            <a href="players.html" class="nav-link">Giocatori</a>
+            <a href="history.html" class="nav-link">Storico</a>
+            <a href="#" class="nav-link active" onclick="return false;">Partita Live</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="live-match-section" class="card">
+            <h2 id="match-title">Partita Live: Caricamento...</h2>
+            <p id="match-info" class="info-text"></p>
+
+            <div id="scoreboard">
+                <div class="player-area player-1">
+                    <div class="scoreboard-image-container">
+                        <img src="images/blank_avatar.png" alt="Giocatore 1" id="player1-image" class="scoreboard-player-image">
+                        <h3 id="player1-name" class="scoreboard-player-name">Giocatore 1</h3>
+                    </div>
+                    <div class="games-won" id="player1-games-won" style="display: none;">Games: 0</div>
+                    <div class="score-display" id="player1-score">0</div>
+                    <div class="score-controls">
+                        <button class="score-btn score-minus" data-player="1" aria-label="Diminuisci punteggio giocatore 1">-</button>
+                        <button class="score-btn score-plus" data-player="1" aria-label="Aumenta punteggio giocatore 1">+</button>
+                    </div>
+                </div>
+
+                <div class="vs-separator">VS</div>
+
+                <div class="player-area player-2">
+                    <div class="scoreboard-image-container">
+                         <img src="images/blank_avatar.png" alt="Giocatore 2" id="player2-image" class="scoreboard-player-image">
+                         <h3 id="player2-name" class="scoreboard-player-name">Giocatore 2</h3>
+                    </div>
+                    <div class="games-won" id="player2-games-won" style="display: none;">Games: 0</div>
+                     <div class="score-display" id="player2-score">0</div>
+                     <div class="score-controls">
+                         <button class="score-btn score-minus" data-player="2" aria-label="Diminuisci punteggio giocatore 2">-</button>
+                         <button class="score-btn score-plus" data-player="2" aria-label="Aumenta punteggio giocatore 2">+</button>
+                     </div>
+                </div>
+            </div>
+
+            <div class="finish-match-controls">
+                 <button id="finish-match-button" style="display: none;">Salva Risultato Finale</button>
+                <p id="finish-error" class="error-message" role="alert" aria-live="assertive"></p>
+                 <p><a href="index.html" class="cancel-link">Annulla e torna al tabellone</a></p>
+            </div>
+        </section>
+
+        <div id="game-win-overlay" class="announcement-overlay">
+            <div class="announcement-content">
+                <img src="images/blank_avatar.png" alt="Vincitore Game" id="game-winner-image">
+                <p id="game-winner-message">Giocatore X vince il game!</p>
+                <button id="next-game-button">Prossimo Game</button>
+            </div>
+        </div>
+
+        <div id="match-win-overlay" class="announcement-overlay">
+             <div class="announcement-content">
+                 <img src="images/blank_avatar.png" alt="Vincitore Match" id="match-winner-image">
+                 <p id="match-winner-message">Giocatore X vince la partita!</p>
+                 <button id="confirm-match-win-button">Conferma e Salva</button>
+             </div>
+        </div>
+        </main>
+
+    <button id="theme-toggle" class="theme-toggle-button" title="Toggle Light/Dark Theme">☀️</button>
+
+    <script src="scoreboard.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>
